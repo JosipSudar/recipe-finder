@@ -1,5 +1,12 @@
 import { db } from "@/utils/firebaseConfig";
-import { collection, deleteDoc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  deleteField,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
@@ -26,13 +33,8 @@ const SavedRecipe = () => {
 
   const deleteFavorite = async (recipeId) => {
     try {
-      const recipesCollection = collection(db, "recipes");
-      const querySnapshot = await getDocs(recipesCollection);
-      const recipeDocIndex = querySnapshot.docs.indexOf(
-        querySnapshot.docs.find((doc) => doc.id === recipeId)
-      );
-      await updateDoc(querySnapshot.docs[recipeDocIndex]);
-      fetchFavorites();
+      const recipeDoc = doc(db, "recipes", recipeId);
+      await deleteDoc(recipeDoc);
     } catch (error) {
       console.error("Error deleting favorite:", error);
     }
